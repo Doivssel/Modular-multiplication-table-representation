@@ -1,14 +1,16 @@
-#Last update 20/07/21 17:29
-
 from tkinter import *
 from PIL import ImageGrab
-
 from math import cos,sin,pi
 
-
-"""Definit l'ensemble de interface utilisateur"""
 class GUI():
     def __init__(self,windows):
+        """
+        Parameters:
+        windows: tkinter.Tk() instance
+        
+        Goal:
+        Graphics representation, button...
+        """
         self.windows=windows
         windows.title("Table modulaire")
         windows.attributes('-fullscreen',True)
@@ -41,7 +43,6 @@ class GUI():
         self.checkBoxTableAnim.grid(row=4,column=1,stick=NSEW,columnspan=2)
 
         self.draw = Canvas(windows,bg='white',width=windows.winfo_width()*15/20,height=windows.winfo_height()-40)
-        #self.modulo=self.draw.create_text(400,400,text="678")
 
         self.draw.grid(row=0,column=0,padx=20,pady=20,rowspan=9)
 
@@ -56,9 +57,17 @@ class GUI():
         self.downloadButton.grid(row=7,column=1,sticky=NSEW,columnspan=2)
         self.stopButton.grid(row=6,column=1,sticky=NSEW,columnspan=2)
 
-"""Permet de generer dans un tableau de dimension (modulo,2) l'ensemeble des points d'un cercle necessaire
-tout en ayant un ecart d'angle entre chaque points egaux"""
+
 def pointGeneraorCircle(modulo,l_coord):
+    """
+    Parameters:
+    modulo: int self explanatory
+    l_coord: list used to store coords
+    
+    Goal:
+    Creating a list of dim (modulo,2) that store the position of the point on the circle.
+    These point must have the same distance between them.
+    """
     for i in range(0,modulo):
         for j in range(0,2):
             if j%2==0:
@@ -66,24 +75,31 @@ def pointGeneraorCircle(modulo,l_coord):
             else:
                 l_coord[i][j]=sin(pi/2-i*((2*pi)/modulo))
 
-"""permet de verifier que l'utilisateur entre bien des nombres à finir"""
 def verifyEntry(getRandomEntry):
-    return True
-    """for i in range(len(getRandomEntry)):
-        if(ord(getRandomEntry[i])<=ord("9") and ord(getRandomEntry[i])>=ord("0") and i==len(getRandomEntry)-1):
-            return True
-        else:
-            return False"""
-    """i=0
-    random=0
-    while(i<=len(randomEntry)-1 and ord(randomEntry[i])<=ord("9") and ord(randomEntry[i])>=ord("0")):
-        random=random*10+ord(randomEntry[i])-ord("0")
-        i+=1
-    return random"""
+    """
+    Parameters:
+    getRandomEntry: input of an entry tkinter widget
 
-"""Les objet de type entry retourne des str, cette fonction sert à les convertir en int
-en utilisant la valeur des car dans la table ASCII"""
+    Goal:
+    Verify if the input of the widgets are of the correct type
+
+    Note:
+    Either to complete or delete
+    """
+    return True
+
+
 def stringToInt(getRandomEntry):
+    """
+    Parameters:
+    getRandomEntry: input of an entry tkinter widget
+
+    Goal:
+    The widget used here only return string, for example 1 get returned as "1".
+    As such this function convert the string to int using the ASCII table. It is important to note 
+    that it also convert letters or every characters in fact. That's why the verifyEntry
+    function may be unecessary
+    """
     random=0
     if verifyEntry(getRandomEntry):
         for i in range(len(getRandomEntry)):
@@ -92,13 +108,35 @@ def stringToInt(getRandomEntry):
     else:
         return 0
 
-"""Permet de stop les animations en cours"""
+
 def stopButtonClick(isClicked):
+    """
+    Parameters:
+    isClicked: output of a button widget
+
+    Goal:
+    Stop the animation when the stop button widget is clicked
+    """
     isClicked.set(True)
 
-"""On anime de 0 à la valeur de table avec une fonction recursive qui s'appele toute les
-valeur de getspeedentry on affiche aussi la valeur de table et modulo"""
+
 def animateTableMode(windows,getModuloEntry,getTableEntry,getSpeedEntry,isClicked,draw,j) :
+    """
+    Parameters:
+    windows: tkinter.TK instance
+    getModuloEntry: output of the Modulo entry widget
+    getTabbleEntry: output of the Table entry widget
+    getSpeedEntry: output of the Speed entry widget
+    isClicked: output of the isClicked button widget
+    draw: output of the draw button widget
+    j: int explained in goal
+    
+    Goal:
+    Animate from 0 to getTableEntry the graph by using a recursie function
+    that call itself every getSpeedEntry. As such j is used to keep track of the current table animated
+    to animate the next one
+    """
+
     draw.delete("all")
     if(j<=stringToInt(getTableEntry)):
         draw.create_text(draw.winfo_width()/2+100,draw.winfo_height()-40,text="TABLE : "+str(j),font=("Arial", 10,))
@@ -110,9 +148,23 @@ def animateTableMode(windows,getModuloEntry,getTableEntry,getSpeedEntry,isClicke
         if(isClicked.get()!=True):
             windows.after(getSpeedEntry,lambda :animateTableMode(windows,getModuloEntry,getTableEntry,getSpeedEntry,isClicked,draw,j=j+1))
 
-"""On anime de 0 à la valeur de modulo avec une fonction recursive qui s'appele toute les
-valeur de getspeedentry on affiche aussi la valeur de table et modulo"""
+
 def animateModuloMode(windows,getTableEntry,getModuloEntry,getSpeedEntry,isClicked,draw,j) :
+    """
+    Parameters:
+    windows: tkinter.TK instance
+    getModuloEntry: output of the Modulo entry widget
+    getTabbleEntry: output of the Table entry widget
+    getSpeedEntry: output of the Speed entry widget
+    isClicked: output of the isClicked button widget
+    draw: output of the draw button widget
+    j: int explained in goal
+    
+    Goal:
+    Animate from 0 to getModuloEntry the graph by using a recursie function
+    that call itself every getSpeedEntry. As such j is used to keep track of the current table animated
+    to animate the next one
+    """
     draw.delete("all")
     if(j<=stringToInt(getModuloEntry)):
         draw.create_text(draw.winfo_width()/2+100,draw.winfo_height()-40,text="TABLE : "+getTableEntry,font=("Arial", 10,))
@@ -124,9 +176,22 @@ def animateModuloMode(windows,getTableEntry,getModuloEntry,getSpeedEntry,isClick
         if(isClicked.get()!=True):
             windows.after(getSpeedEntry,lambda :animateModuloMode(windows,getTableEntry,getModuloEntry,getSpeedEntry,isClicked,draw,j=j+1))
 
-"""permet en fonction des checkbox de cocher de savoir qu'elle animation lancée ou de ne pas en lancer
-dans le cas contraire"""
+
 def calculate(windows,getModuloEntry,getTableEntry,getSpeedEntry,checkVarModulo,checkVarTable,isClicked,draw):
+    """
+    Parameters:
+    windows: tkinter.TK instance
+    getModuloEntry: output of the Modulo entry widget
+    getTabbleEntry: output of the Table entry widget
+    getSpeedEntry: output of the Speed entry widget
+    chechVarModulo: output of the Modulo checkButton
+    chechVarTable: output of the Table checkButton
+    isClicked: output of the isClicked button widget
+    draw: output of the draw button widget
+    
+    Goal:
+    Used to decide what to animate/draw depending on the current configuration of all the widgets
+    """
     draw.delete("all")
     isClicked.set(False)
     j=0
@@ -143,13 +208,16 @@ def calculate(windows,getModuloEntry,getTableEntry,getSpeedEntry,checkVarModulo,
             for i in range(1,stringToInt(getModuloEntry)):
                 draw.create_line(draw.winfo_width()/2+290*l_coord[i][0],draw.winfo_height()/2+290*l_coord[i][1],draw.winfo_width()/2+290*l_coord[(i*stringToInt(getTableEntry))%stringToInt(getModuloEntry)][0],draw.winfo_height()/2+290*l_coord[(i*stringToInt(getTableEntry))%stringToInt(getModuloEntry)][1],fill="black",width=1)
 
-"""On se sert du module Pil pour faire une capture d"ecran il faut encore completer la partie
-sur la sauvegarde auto"""
+
 def downloadCommand(windows,draw):
+    """
+    Goal:
+    Download a graph
+    """
     drawWidth=draw.winfo_width()
     drawHeight=draw.winfo_height()
     im=ImageGrab.grab(bbox=(22,22,drawWidth+15,drawHeight+15))
-    im.show()#+telechargement automatique
+    im.show()
 
 
 windows=Tk()
