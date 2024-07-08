@@ -2,6 +2,7 @@
 
 This code produce a tkinter window that allow you to animate/draw a nice representation of the modular table. Here are some graphs as an example, there is also gif that show some animation.
 
+![example_modtab_1](https://github.com/Doivssel/Modular-table-representation/assets/172904759/0a7c9c9c-46c1-40fc-b746-945ab1c671e4)
 
 
 
